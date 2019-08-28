@@ -8,8 +8,9 @@
 }
 
 .App-header {
-  /*background-image: url("https://en.chessbase.com/thumb/71280");*/
-  background: radial-gradient(circle, white, darkgrey);
+  background-image: url("images/chess.jpg");
+  background-size: cover;
+  /*background: radial-gradient(circle, white, darkgrey);*/
   /*background-color: #282c34;*/
   min-height: 100vh;
   /*display: flex;*/
@@ -75,22 +76,40 @@ div.player-card {
   padding: 25px;
   border-radius: 8px;
   color: #8b270f;
+  background-color: rgba(245, 245, 245, 0.5);
   margin-bottom: 10px;
-
-  display: flex;
-  justify-content: center; /* align horizontal */
-  align-items: center; /* align vertical */
+  text-align: center; /* align horizontal */
 }
 
-div.player-card p {
-  font-size: small;
+div.player-card.player-president  {
+  background-color: rgba(255, 229, 223, 0.5);
+}
 
+.player-card-group {
+    height: 50vh;
 }
 
 .height-cards-2 div.player-card {
-  height: 50vh;
+  margin-top: 16%;
+  min-height: 33%;
 }
 
 .height-cards-3 div.player-card {
-  height: 33vh;
+  min-height: 33%;
+}
+
+div.player-card .player-details {
+  font-size: 14px;
+}
+
+.show-player-details {
+  padding: 10px;
+  border: black dashed 1px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.show-player-details:hover {
+  cursor: pointer;
+  background-color: #d6d6d6;
 }

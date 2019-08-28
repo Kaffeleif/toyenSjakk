@@ -1,9 +1,11 @@
 import React, {Component} from 'react';
 import './App.css';
-import { Button } from 'reactstrap';
+import {Button} from 'reactstrap';
 
 const lichessUrl = "https://lichess.org/@/";
 const lichessRatingDeviationLimit = 110; // Above 110 is considered provisional by Lichess
+const view_simple = "simple";
+const view_extended = "extended";
 
 class Player extends React.Component {
     constructor(props) {
@@ -12,56 +14,86 @@ class Player extends React.Component {
             error: null,
             isLoaded: false,
             lichessRating: [],
+            view: view_simple,
 
             name: props.name,
+            membershipStatus: props.membershipStatus ? props.membershipStatus : "Medlem",
             lichessPath: props.lichessPath,
-            chessComPath: props.chessComPath
+            chessComPath: props.chessComPath,
         }
     }
+
+    setPlayerView() {
+        if (this.state.view == view_simple) {
+            this.setState({view: view_extended});
+        } else {
+            this.setState({view: view_simple});
+        }
+    }
+
+    handleShowPlayerDetails() {
+        this.setPlayerView();
+
+        if (!this.state.isLoaded) {
+            fetch("https://lichess.org/api/user/" + this.state.lichessPath)
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        this.setState({
+                            isLoaded: true,
+                            lichessRating: result.perfs ? result.perfs.blitz : {rating: null}
+                        });
+                    },
+                    (error) => {
+                        this.setState({
+                            isLoaded: true,
+                            error
+                        })
+                    }
+                )
+        }
+    }
+
 
     returnBestPerfLichess(perfs) {
         console.log(perfs);
 
         let bestPerf = {type: null, rating: 0};
-        Object.values(perfs).forEach(function(perf) {
-           if (perf.rd < lichessRatingDeviationLimit && perf.rating > bestPerf.rating ) {
-               bestPerf = perf;
-           }
+        Object.values(perfs).forEach(function (perf) {
+            if (perf.rd < lichessRatingDeviationLimit && perf.rating > bestPerf.rating) {
+                bestPerf = perf;
+            }
         });
 
         return bestPerf;
     }
 
-    componentDidMount() {
-        fetch("https://lichess.org/api/user/" + this.state.lichessPath)
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    this.setState({
-                        isLoaded: true,
-                        lichessRating: result.perfs ? result.perfs.blitz : {rating: null}
-                    });
-                },
-                (error) => {
-                    this.setState({
-                        isLoaded: true,
-                        error
-                    })
-                }
-            )
-    }
-
     render() {
+        let playerCardClassName = "player-card";
+        if (this.state.membershipStatus == "President") {
+            playerCardClassName += " player-president";
+        }
+
+        let viewExtended;
+        if (this.state.view == view_extended) {
+            viewExtended = <div className="player-details">
+                <a href={lichessUrl + this.state.lichessPath}>Lichess: {this.state.lichessRating.rating}</a>
+            </div>;
+        }
+
+        let buttonName = this.state.view == view_extended ? "Vis mindre" : "Vis mer";
+        let viewExtendedButton = <div>
+            <span className="show-player-details" onClick={() => this.handleShowPlayerDetails()}>{buttonName}</span>
+        </div>;
+
         return (
-                <div className="player-card">
-                    <h3>{this.state.name}</h3>
-                    <div>
-                        <small>
-                            <a href={lichessUrl + this.state.lichessPath}>Lichess: {this.state.lichessRating.rating }</a>
-                        </small>
-                    </div>
-                </div>
-            );
+            <div className={playerCardClassName}>
+                <h3>{this.state.name}</h3>
+                <h5>{this.state.membershipStatus}</h5>
+                {viewExtended}
+                {viewExtendedButton}
+            </div>
+        );
     }
 }
 
@@ -82,17 +114,18 @@ class Players extends React.Component {
 
                         <div className="row player-card-group">
                             <div className="col-md-4 height-cards-2">
-                                <Player name={"Erik Hofsø Knudsen"} lichessPath={"Hoeggern"}/>
-                                <Player name={"Audun Melting Kvalbein"} lichessPath={"Kaffeleif"}/>
+                                <Player id="erik" name={"Erik Hofsø Knudsen"} lichessPath={"Hoeggern"}/>
+                                <Player id="audun" name={"Audun Melting Kvalbein"} lichessPath={"Kaffeleif"}/>
                             </div>
                             <div className="col-md-4 height-cards-3">
-                                <Player name={"Emil Sandbakken"} lichessPath={"eiegod"}/>
-                                <Player name={"Thomas Luis Aasen"} lichessPath={"Klossmajoren"}/>
-                                <Player name={"Henrik Thomassen"}/>
+                                <Player id="emil" name={"Emil Sandbakken"} lichessPath={"eiegod"}
+                                        membershipStatus={"President"}/>
+                                <Player id="thomas" name={"Thomas Luis Aasen"} lichessPath={"Klossmajoren"}/>
+                                <Player id="henrik" name={"Henrik Thomassen"}/>
                             </div>
                             <div className="col-md-4 height-cards-2">
-                                <Player name={"Yani Nait-Aissa"}/>
-                                <Player name={"Ivar Wolden"}/>
+                                <Player id="yani" name={"Yani Nait-Aissa"}/>
+                                <Player id="ivar" name={"Ivar Wolden"}/>
                             </div>
                         </div>
                     </div>
