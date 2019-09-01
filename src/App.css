@@ -9,6 +9,7 @@
 
 .App-header {
   background-image: url("images/chess.jpg");
+  /*background-image: url("fontawesome/svgs/solid/chess-rook.svg");: ;*/
   background-size: cover;
   /*background: radial-gradient(circle, white, darkgrey);*/
   /*background-color: #282c34;*/
@@ -53,7 +54,9 @@ div.Main-nav {
   top: 30%;
 }
 
-button.Main-nav-btn {
+.Main-nav-btn {
+  color: black;
+  text-align: center;
   background: inherit;
   border: 2px solid #3f3f3f;
   border-radius: 30px;
@@ -67,8 +70,14 @@ button.Main-nav-btn {
   margin-bottom: 10px;
 }
 
-button.Main-nav-btn icon {
+.Main-nav-btn icon {
   background-color: #61dafb;
+}
+
+.Main-nav-btn:hover {
+  background-color: #dcdcdc;
+  text-decoration: none;
+  color: black;
 }
 
 div.player-card {
@@ -78,7 +87,7 @@ div.player-card {
   color: #8b270f;
   background-color: rgba(245, 245, 245, 0.5);
   margin-bottom: 10px;
-  text-align: center; /* align horizontal */
+  text-align: center;
 }
 
 div.player-card.player-president  {
@@ -112,4 +121,8 @@ div.player-card .player-details {
 .show-player-details:hover {
   cursor: pointer;
   background-color: #d6d6d6;
+}
+
+.best-rating {
+  font-weight: bold;
 }
